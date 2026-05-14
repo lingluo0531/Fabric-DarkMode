@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Mode Status Report — Fabric</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            line-height: 1.7;
+            background-color: #f0f2f5;
+            color: #1a1a1a;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #0078d4, #005a9e);
+            color: #ffffff;
+            padding: 36px 40px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+        header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        section {
+            padding: 32px 40px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        section:last-of-type {
+            border-bottom: none;
+        }
+        h2 {
+            color: #0078d4;
+            font-size: 22px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #0078d4;
+            display: inline-block;
+        }
+        p {
+            margin-bottom: 12px;
+            font-size: 15px;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        th {
+            background-color: #0078d4;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 12px 16px;
+            text-align: left;
+        }
+        td {
+            padding: 12px 16px;
+            font-size: 14px;
+            border-bottom: 1px solid #eaeaea;
+            vertical-align: top;
+        }
+        tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        tr:hover {
+            background-color: #edf5fd;
+        }
+        td:nth-child(2) {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        ul {
+            margin: 12px 0 0 0;
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 12px;
+            font-size: 15px;
+            color: #333;
+            line-height: 1.6;
+        }
+        footer {
+            background-color: #f9f9f9;
+            padding: 20px 40px;
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+            border-top: 1px solid #e8e8e8;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Fabric Dark Mode — Status Report</h1>
+        <p>Private Preview Implementation Progress &bull; May 14, 2026</p>
+    </header>
+    <section>
+        <h2>Overview</h2>
+        <p>The private preview plan aims to deliver a credible, customer-visible dark mode experience in Fabric by <strong>May 29, 2026</strong>. Dark mode reduces eye strain, modernizes the Fabric shell, and creates a more consistent cross-surface experience for long-session creators. Private preview focuses on the Fabric shell plus the extension set already signed off or in final deployment track.</p>
+    </section>
+    <section>
+        <h2>Progress Summary</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Status</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Fabric Shell</td>
+                    <td>Train 5.1</td>
+                    <td>In preview scope.</td>
+                </tr>
+                <tr>
+                    <td>Workloads Hub L1</td>
+                    <td>Released</td>
+                    <td>Adoption signal is strong.</td>
+                </tr>
+                <tr>
+                    <td>OneLake Category</td>
+                    <td>Train 5.2</td>
+                    <td>In preview scope.</td>
+                </tr>
+                <tr>
+                    <td>Lakehouse</td>
+                    <td>Released</td>
+                    <td>Adoption signal is strong.</td>
+                </tr>
+                <tr>
+                    <td>Variable Library</td>
+                    <td>Train 4.2</td>
+                    <td>In preview scope.</td>
+                </tr>
+                <tr>
+                    <td>Notebook</td>
+                    <td>Train 5.3</td>
+                    <td>In preview scope.</td>
+                </tr>
+                <tr>
+                    <td>Real-Time Hub</td>
+                    <td>Train 3.1</td>
+                    <td>In preview scope.</td>
+                </tr>
+                <tr>
+                    <td>Kusto</td>
+                    <td>Independent deployment</td>
+                    <td>In preview scope.</td>
+                </tr>
+                <tr>
+                    <td>Warehouse & Azure SQL DW</td>
+                    <td>Released</td>
+                    <td>Adoption signal is strong.</td>
+                </tr>
+                <tr>
+                    <td>Data Science</td>
+                    <td>Train 3.1</td>
+                    <td>In preview scope.</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <section>
+        <h2>Next Steps</h2>
+        <ul>
+            <li>Approve the end-of-May private preview target and keep scope limited to signed-off shell and supported workload surfaces.</li>
+            <li>Align on success message: "customer-visible dark mode across Fabric shell and key creator workloads," not full-platform completion.</li>
+            <li>Confirm preview communications and intake path for customer feedback after launch.</li>
+        </ul>
+    </section>
+    <footer>
+        <p>Generated on May 14, 2026</p>
+    </footer>
+</div>
+</body>
+</html>

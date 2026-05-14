@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fabric Dark Mode Private Preview Plan</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --panel: rgba(255, 252, 247, 0.82);
+      --panel-strong: rgba(255, 252, 247, 0.94);
+      --ink: #16212b;
+      --muted: #536170;
+      --line: rgba(22, 33, 43, 0.12);
+      --accent: #0f6cbd;
+      --accent-soft: rgba(15, 108, 189, 0.12);
+      --success: #107c10;
+      --success-soft: rgba(16, 124, 16, 0.12);
+      --warning: #9a6700;
+      --warning-soft: rgba(154, 103, 0, 0.12);
+      --shadow: 0 24px 70px rgba(29, 40, 52, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: "Segoe UI", "Aptos", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(15, 108, 189, 0.18), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(16, 124, 16, 0.14), transparent 28%),
+        linear-gradient(135deg, #e8dcc8 0%, #f7f2ea 46%, #e7efe9 100%);
+      padding: 28px;
+    }
+
+    .slide {
+      width: min(1440px, calc(100vw - 56px));
+      border-radius: 28px;
+      overflow: visible;
+      position: relative;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.56), rgba(255, 255, 255, 0.18)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.84));
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      padding: 36px 40px 30px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 14px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(15, 108, 189, 0.12);
+      width: fit-content;
+    }
+
+    .header {
+      display: grid;
+      grid-template-columns: 1.5fr 0.9fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 36px;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      max-width: 880px;
+    }
+
+    .subhead {
+      margin-top: 8px;
+      font-size: 16px;
+      line-height: 1.4;
+      color: var(--muted);
+      max-width: 860px;
+    }
+
+    .date-card {
+      background: linear-gradient(160deg, #15232e 0%, #223546 100%);
+      color: #f7fbff;
+      border-radius: 20px;
+      padding: 20px 20px 18px;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .date-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -38px -44px auto;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(132, 197, 255, 0.42), transparent 68%);
+    }
+
+    .date-label {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.76;
+      margin-bottom: 14px;
+    }
+
+    .date-value {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 6px;
+    }
+
+    .date-note {
+      font-size: 14px;
+      line-height: 1.35;
+      opacity: 0.9;
+      max-width: 280px;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: 1.1fr 1.25fr 0.9fr;
+      gap: 14px;
+      min-height: 0;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px 18px 16px;
+      backdrop-filter: blur(14px);
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .panel.strong {
+      background: var(--panel-strong);
+    }
+
+    .panel-title {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 14px;
+      font-weight: 700;
+    }
+
+    .scope-list,
+    .callouts,
+    .ask-list,
+    .metrics {
+      display: grid;
+      gap: 8px;
+    }
+
+    .scope-item,
+    .callout,
+    .metric,
+    .ask-item {
+      border-radius: 14px;
+      padding: 10px 12px;
+      border: 1px solid rgba(22, 33, 43, 0.08);
+      background: rgba(255, 255, 255, 0.68);
+    }
+
+    .scope-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+    }
+
+    .scope-name {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .scope-train {
+      font-size: 14px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .status-chip {
+      border-radius: 14px;
+      padding: 10px 12px;
+      border: 1px solid transparent;
+      font-size: 13px;
+      line-height: 1.3;
+      min-height: 0;
+    }
+
+    .status-chip strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .green {
+      background: var(--success-soft);
+      border-color: rgba(16, 124, 16, 0.18);
+    }
+
+    .blue {
+      background: var(--accent-soft);
+      border-color: rgba(15, 108, 189, 0.18);
+    }
+
+    .amber {
+      background: var(--warning-soft);
+      border-color: rgba(154, 103, 0, 0.18);
+    }
+
+    .metric-value {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 2px;
+    }
+
+    .metric-label {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .footer {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 14px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot.green { background: var(--success); }
+    .dot.blue { background: var(--accent); }
+    .dot.amber { background: var(--warning); }
+
+    ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    li {
+      margin: 0 0 8px;
+      line-height: 1.4;
+      color: var(--ink);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .onboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .onboard-table th {
+      text-align: left;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      padding: 6px 10px;
+      border-bottom: 2px solid var(--line);
+      font-weight: 700;
+    }
+
+    .onboard-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      line-height: 1.35;
+    }
+
+    .onboard-table a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 12px;
+    }
+
+    .onboard-table a:hover {
+      text-decoration: underline;
+    }
+
+    .plan-post {
+      color: #c4314b;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1200px) {
+      body {
+        padding: 12px;
+      }
+
+      .slide {
+        width: 100%;
+        aspect-ratio: auto;
+      }
+
+      .header,
+      .content,
+      .footer {
+        grid-template-columns: 1fr;
+      }
+
+      .status-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <div class="eyebrow">Leadership Review | Fabric Dark Mode</div>
+
+    <section class="header">
+      <div>
+        <h1>Private Preview Plan: deliver a credible, customer-visible dark mode experience in Fabric by 5/29/2026.</h1>
+        <div class="subhead">
+          Dark mode reduces eye strain, modernizes the Fabric shell, and creates a more consistent cross-surface experience for long-session creators. Private preview focuses on the Fabric shell plus the extension set already signed off or in final deployment track.
+        </div>
+      </div>
+      <aside class="date-card">
+        <div class="date-label">Private Preview Target</div>
+        <div class="date-value">May 29, 2026</div>
+        <div class="date-note">As of May 11, 2026: adoption for private preview scope is on track.</div>
+      </aside>
+    </section>
+
+    <section class="content">
+      <article class="panel strong">
+        <div class="panel-title">In Preview Scope</div>
+        <div class="scope-list">
+          <div class="scope-item">
+            <div class="scope-name">Fabric Shell</div>
+          </div>
+          <div class="scope-item">
+            <div class="scope-name">Workloads Hub L1</div>
+          </div>
+          <div class="scope-item">
+            <div class="scope-name">OneLake Category</div>
+          </div>
+          <div class="scope-item">
+            <div class="scope-name">Lakehouse</div>
+          </div>
+          <div class="scope-item">
+            <div class="scope-name">Variable Library</div>
+          </div>
+          <div class="scope-item">
+            <div class="scope-name">Notebook</div>
+          </div>
+          <div class="scope-item">
+            <div class="scope-name">Real-Time Hub</div>
+          </div>
+          <div class="scope-item">
+            <div class="scope-name">Kusto</div>
+          </div>
+          <div class="scope-item">
+            <div class="scope-name">Warehouse & Azure SQL DW</div>
+          </div>
+          <div class="scope-item">
+            <div class="scope-name">Data Science</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel strong">
+        <div class="panel-title">Dark Mode Adoption Status</div>
+        <div class="status-grid">
+          <div class="status-chip green">
+            <strong>Adoption Signal: Strong</strong>
+            Bug bash completed with no sev1 or sev2 blockers. Current pilot feedback indicates the preview path is stable.
+          </div>
+          <div class="status-chip blue">
+            <strong>Activation Path Working</strong>
+            Users can enable dark mode in Settings, persist preference after refresh, and stay in-theme across major shell entry points.
+          </div>
+          <div class="status-chip blue">
+            <strong>Cross-Surface Adoption Path</strong>
+            Theme support is managed through extension declarations with safe shell fallback when a workload is not dark-mode ready.
+          </div>
+          <div class="status-chip amber">
+            <strong>Adoption Is Scoped By Design</strong>
+            Not every Fabric experience is included yet. Private preview remains focused on high-value shared shell surfaces and priority creator workloads.
+          </div>
+        </div>
+        <div class="callouts">
+          <div class="callout">
+            <strong>Customer value</strong><br />
+            Lower eye strain for long working sessions, modern visual polish, and a visible quality signal for the Fabric platform.
+          </div>
+          <div class="callout">
+            <strong>Demo storyline</strong><br />
+            Turn on dark mode in Settings, refresh to show persistence, then navigate Home, Browse, Workspace list, Monitoring Hub, and supported artifacts.
+          </div>
+          <div class="callout">
+            <strong>Scope discipline</strong><br />
+            Preview will ship with supported workloads only and fall back safely for experiences that are not yet dark-mode ready.
+          </div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-title">Key Metrics</div>
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-value">10</div>
+            <div class="metric-label">Artifacts and shell surfaces currently driving dark mode adoption in preview</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value">0</div>
+            <div class="metric-label">Known sev1 or sev2 issues blocking preview sign-off</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value">On Track</div>
+            <div class="metric-label">Adoption status for end-of-May private preview target</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value">XXX</div>
+            <div class="metric-label">Private Preview Customer Enrollment — registered users to date</div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="footer">
+      <div class="panel">
+        <div class="panel-title">Continued Dark Mode Onboarding Plan</div>
+        <table class="onboard-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>ADO Feature</th>
+              <th>PM Owner</th>
+              <th>Plan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>OneLake Catalog - Govern</td>
+              <td><a href="https://dev.azure.com/powerbi/Trident/_workitems/edit/1966557">Feature 1966557 Onboard to Dark Mode - OneLake Catalog - Govern</a></td>
+              <td>Naama Tsafrir</td>
+              <td>RB</td>
+            </tr>
+            <tr>
+              <td>Deployment Pipelines</td>
+              <td><a href="https://dev.azure.com/powerbi/Trident/_workitems/edit/2022233">Feature 2022233 Onboard to Dark Mode - Deployment Pipeline</a></td>
+              <td>Nimrod Shalit</td>
+              <td>RB</td>
+            </tr>
+            <tr>
+              <td>Event Stream</td>
+              <td><a href="https://dev.azure.com/msdata/Messaging%20Connectors%20and%20Event%20Streams/_workitems/edit/4696538">Feature 4696538 EventStream - Onboard to Dark Mode</a></td>
+              <td>Alicia Li</td>
+              <td>RB</td>
+            </tr>
+            <tr>
+              <td>Azure Data Factory</td>
+              <td><a href="https://dev.azure.com/msdata/Azure%20Data%20Factory/_workitems/edit/4671294">Feature 4671294 Onboard Azure Data Factory to Dark Mode</a></td>
+              <td>Hao Chen</td>
+              <td>RB</td>
+            </tr>
+            <tr>
+              <td>Spark Job Definition</td>
+              <td><a href="https://msdata.visualstudio.com/A365/_workitems/edit/5061270">Feature 5061270 Onboard to Dark Mode - Spark Job Definition</a></td>
+              <td>Qixiao Wang</td>
+              <td>RB</td>
+            </tr>
+            <tr>
+              <td>Data Activator</td>
+              <td><a href="https://dev.azure.com/powerbi/Reflex/_workitems/edit/1803526">Feature 1803526 Onboard to Dark Mode - Data Activator</a></td>
+              <td>Amanda Rivera</td>
+              <td><span class="plan-post">RB or Post-RB</span></td>
+            </tr>
+            <tr>
+              <td>Functions Hub</td>
+              <td><a href="https://powerbi.visualstudio.com/Trident/_workitems/edit/1817435/?view=edit">Feature 1817435 Onboard to Dark Mode - Functions Hub</a></td>
+              <td>Sunitha Muthukrishna</td>
+              <td><span class="plan-post">Post-RB</span></td>
+            </tr>
+            <tr>
+              <td>Power BI</td>
+              <td><a href="https://dev.azure.com/powerbi/Power%20BI/_queries/query/?tempQueryId=34137f97-b7dd-4033-af21-fe5d32ed2c72">Untitled query - Boards</a></td>
+              <td>Kay Unkroth</td>
+              <td><span class="plan-post">Post-RB</span></td>
+            </tr>
+            <tr>
+              <td>Data flow</td>
+              <td><a href="https://dev.azure.com/powerbi/Power%20Query/_workitems/edit/1803522?src=WorkItemMention&src-action=artifact_link">Feature 1803522 Onboard Dataflow to Dark Mode</a></td>
+              <td>Miguel Escobar</td>
+              <td><span class="plan-post">Post-RB</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Concerns &amp; Help Needed</div>
+        <div class="ask-list">
+          <div class="ask-item">
+            <strong>Prolonged UI Inconsistency</strong><br />
+            Dark mode adoption spans multiple semesters. Until all workloads onboard, users will experience a mixed light/dark interface — undermining perceived quality and brand consistency.
+          </div>
+          <div class="ask-item">
+            <strong>Cross-Team Prioritization</strong><br />
+            Several workload teams have deferred onboarding to Post-RB or later windows. Without leadership support to elevate priority, the gap between preview and full coverage will continue to grow.
+          </div>
+          <div class="ask-item">
+            <strong>Ask: Accelerate Onboarding to Public Preview</strong><br />
+            We need leadership backing to ensure all workload teams commit to a compressed timeline, reducing the onboarding tail and accelerating the path from private preview to a consistent public preview experience.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

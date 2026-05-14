@@ -1,0 +1,14 @@
+{
+  "name": "fabric-darkmode-demo",
+  "version": "1.0.0",
+  "description": "Fabric Dark Mode – private preview leadership demo",
+  "scripts": {
+    "demo": "playwright test --headed --workers=1",
+    "demo:slow": "playwright test --headed --workers=1 -- --slowMo=800",
+    "test": "playwright test",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.43.0"
+  }
+}
