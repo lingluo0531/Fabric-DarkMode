@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dark Mode Onboarding — Reference Guide</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --panel: rgba(255, 252, 247, 0.82);
+      --panel-strong: rgba(255, 252, 247, 0.94);
+      --ink: #16212b;
+      --muted: #536170;
+      --line: rgba(22, 33, 43, 0.12);
+      --accent: #0f6cbd;
+      --accent-soft: rgba(15, 108, 189, 0.12);
+      --success: #107c10;
+      --success-soft: rgba(16, 124, 16, 0.12);
+      --warning: #9a6700;
+      --warning-soft: rgba(154, 103, 0, 0.12);
+      --purple: #5c2d91;
+      --purple-soft: rgba(92, 45, 145, 0.10);
+      --shadow: 0 24px 70px rgba(29, 40, 52, 0.16);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Aptos", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(15, 108, 189, 0.18), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(16, 124, 16, 0.14), transparent 28%),
+        linear-gradient(135deg, #e8dcc8 0%, #f7f2ea 46%, #e7efe9 100%);
+      min-height: 100vh;
+      padding: 32px 24px 60px;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      gap: 24px;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      background: linear-gradient(145deg, rgba(255,255,255,0.60), rgba(255,255,255,0.22));
+      border: 1px solid rgba(255,255,255,0.68);
+      border-radius: 28px;
+      padding: 32px 36px 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(15,108,189,0.14);
+      margin-bottom: 14px;
+    }
+
+    .eyebrow svg { width: 14px; height: 14px; }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .subhead {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .subhead a { color: var(--accent); text-decoration: none; }
+    .subhead a:hover { text-decoration: underline; }
+
+    /* ── Summary table ── */
+    .section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 24px 26px 20px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 4px 20px rgba(29,40,52,0.07);
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--muted);
+      margin: 0 0 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+
+    th {
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 14px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th:first-child { padding-left: 0; }
+
+    td {
+      padding: 12px 14px;
+      vertical-align: top;
+      border-bottom: 1px solid rgba(22,33,43,0.06);
+    }
+
+    td:first-child { padding-left: 0; }
+    tr:last-child td { border-bottom: none; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .badge-blue   { background: var(--accent-soft);  color: var(--accent); }
+    .badge-green  { background: var(--success-soft); color: var(--success); }
+    .badge-purple { background: var(--purple-soft);  color: var(--purple); }
+
+    code {
+      font-family: "Cascadia Code", "Consolas", monospace;
+      font-size: 13px;
+      background: rgba(22,33,43,0.07);
+      padding: 2px 6px;
+      border-radius: 5px;
+      color: var(--ink);
+    }
+
+    /* ── Scenario cards ── */
+    .scenarios {
+      display: grid;
+      gap: 20px;
+    }
+
+    .scenario-card {
+      border-radius: 22px;
+      padding: 26px 28px 22px;
+      border: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 4px 20px rgba(29,40,52,0.07);
+    }
+
+    .scenario-card.blue   { background: linear-gradient(145deg, rgba(15,108,189,0.06), rgba(255,252,247,0.88)); }
+    .scenario-card.green  { background: linear-gradient(145deg, rgba(16,124,16,0.06),  rgba(255,252,247,0.88)); }
+    .scenario-card.purple { background: linear-gradient(145deg, rgba(92,45,145,0.06),  rgba(255,252,247,0.88)); }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .card-number {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 21px;
+      letter-spacing: -0.02em;
+    }
+
+    .effort-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .effort-chip.blue   { background: var(--accent-soft);  color: var(--accent); border: 1px solid rgba(15,108,189,0.18); }
+    .effort-chip.green  { background: var(--success-soft); color: var(--success); border: 1px solid rgba(16,124,16,0.18); }
+    .effort-chip.purple { background: var(--purple-soft);  color: var(--purple); border: 1px solid rgba(92,45,145,0.18); }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+    .inner-panel {
+      background: rgba(255,255,255,0.62);
+      border: 1px solid rgba(22,33,43,0.08);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+
+    .inner-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 10px;
+    }
+
+    ol, ul {
+      margin: 0;
+      padding-left: 20px;
+      line-height: 1.65;
+      font-size: 14.5px;
+    }
+
+    li + li { margin-top: 5px; }
+
+    pre {
+      background: #15232e;
+      color: #c9d8e8;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 13px;
+      font-family: "Cascadia Code", "Consolas", monospace;
+      overflow-x: auto;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .checklist {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 6px;
+    }
+
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .check-box {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(22,33,43,0.25);
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── API table ── */
+    .api-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin-top: 2px;
+    }
+
+    .api-table th {
+      font-size: 11px;
+      padding-bottom: 6px;
+    }
+
+    .api-table td {
+      padding: 8px 10px;
+    }
+
+    .api-table td:first-child { padding-left: 0; }
+
+    /* ── Exit criteria ── */
+    .exit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .exit-item {
+      background: rgba(255,255,255,0.64);
+      border: 1px solid rgba(22,33,43,0.08);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .exit-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--success-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 11px;
+      color: var(--success);
+      font-weight: 800;
+    }
+
+    /* ── Refs ── */
+    .refs {
+      display: grid;
+      gap: 8px;
+    }
+
+    .ref-item {
+      background: rgba(255,255,255,0.62);
+      border: 1px solid rgba(22,33,43,0.08);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .ref-item a { color: var(--accent); text-decoration: none; }
+    .ref-item a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── Page header ── -->
+  <header class="page-header">
+    <div class="eyebrow">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+      Fabric Dark Mode
+    </div>
+    <h1>Onboarding Reference Guide</h1>
+    <p class="subhead">
+      Consolidates the three onboarding scenarios, recommended tools, and estimated effort.<br>
+      Wiki source: <a href="https://dev.azure.com/powerbi/Trident/_wiki/wikis/Trident.wiki/173475/Shell-UX-dark-theme-support-guide" target="_blank">Shell UX dark theme support guide</a>
+    </p>
+  </header>
+
+  <!-- ── Quick-reference table ── -->
+  <section class="section">
+    <p class="section-title">Quick-Reference Table</p>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Scenario</th>
+          <th>Key Tool / API</th>
+          <th>Estimated Effort</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-blue">1</span></td>
+          <td>React + Fluent UI v8/v9 + 1JS ribbon extension</td>
+          <td><code>ExtensionThemeProvider</code> from <code>@trident/extension-client-theme</code></td>
+          <td><strong>~1 day</strong></td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-green">2</span></td>
+          <td>Angular / other iframe-based extension</td>
+          <td><code>ExtensionClientAPI</code> → <code>themeAPI</code></td>
+          <td>Varies (see below)</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-purple">3</span></td>
+          <td>PBIClient-based repo</td>
+          <td>AI tool provided by Shell team</td>
+          <td>Varies (depends on issue count)</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── Scenarios ── -->
+  <div class="scenarios">
+
+    <!-- Scenario 1 -->
+    <div class="scenario-card blue">
+      <div class="card-header">
+        <div>
+          <div class="card-number">Scenario 1</div>
+          <h2>React + Fluent UI v8/v9 + 1JS Ribbon</h2>
+        </div>
+        <span class="effort-chip blue">~1 day</span>
+      </div>
+
+      <div class="two-col" style="margin-bottom:16px">
+        <div class="inner-panel">
+          <p class="inner-title">What to do</p>
+          <ol>
+            <li>Upgrade React, Fluent UI v8/v9, and 1JS ribbon packages.</li>
+            <li>Wrap the extension root with <code>ExtensionThemeProvider</code> from <code>@trident/extension-client-theme</code>.</li>
+          </ol>
+        </div>
+        <div class="inner-panel">
+          <p class="inner-title">Validation checklist</p>
+          <ul class="checklist">
+            <li><span class="check-box"></span>Package versions upgraded successfully.</li>
+            <li><span class="check-box"></span><code>ExtensionThemeProvider</code> applied at app root.</li>
+            <li><span class="check-box"></span>Initial theme renders correctly (light &amp; dark).</li>
+            <li><span class="check-box"></span>Runtime theme switching works without reload.</li>
+            <li><span class="check-box"></span>Key surfaces pass accessibility / contrast checks.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="inner-panel">
+        <p class="inner-title">Code pattern</p>
+        <pre>import { ExtensionThemeProvider } from '@trident/extension-client-theme';
+
+function App() {
+  return (
+    &lt;ExtensionThemeProvider&gt;
+      {/* your extension content */}
+    &lt;/ExtensionThemeProvider&gt;
+  );
+}</pre>
+      </div>
+    </div>
+
+    <!-- Scenario 2 -->
+    <div class="scenario-card green">
+      <div class="card-header">
+        <div>
+          <div class="card-number">Scenario 2</div>
+          <h2>Angular / Other iframe-Based Extensions</h2>
+        </div>
+        <span class="effort-chip green">Varies</span>
+      </div>
+
+      <div class="two-col" style="margin-bottom:16px">
+        <div class="inner-panel">
+          <p class="inner-title">Shell APIs</p>
+          <table class="api-table">
+            <thead>
+              <tr><th>API</th><th>Purpose</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>ExtensionClientAPI</code></td>
+                <td>Entry point for all Shell extension APIs</td>
+              </tr>
+              <tr>
+                <td><code>themeAPI</code></td>
+                <td>Exposes current theme &amp; theme-change events</td>
+              </tr>
+            </tbody>
+          </table>
+          <br>
+          <p class="inner-title">Key requirements</p>
+          <ul>
+            <li>Detect current theme <strong>on load</strong> — don't assume light mode.</li>
+            <li>Listen for <code>themeChanged</code> events; re-apply immediately.</li>
+            <li>Avoid hard-coded colors; use design tokens.</li>
+            <li>Iframe updates without a full reload.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="inner-panel" style="margin-bottom:12px">
+            <p class="inner-title">Code pattern</p>
+            <pre>import { ExtensionClientAPI } from '@trident/extension-client';
+
+const theme = ExtensionClientAPI
+  .themeAPI.getCurrentTheme();
+applyTheme(theme);
+
+ExtensionClientAPI.themeAPI
+  .onThemeChanged((newTheme) =&gt; {
+    applyTheme(newTheme);
+  });</pre>
+          </div>
+          <div class="inner-panel">
+            <p class="inner-title">Validation checklist</p>
+            <ul class="checklist">
+              <li><span class="check-box"></span><code>themeAPI</code> in a single theme service.</li>
+              <li><span class="check-box"></span>Theme applied correctly on load.</li>
+              <li><span class="check-box"></span><code>onThemeChanged</code> fires; UI updates without reload.</li>
+              <li><span class="check-box"></span>No hard-coded hex/rgb colors in styles.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scenario 3 -->
+    <div class="scenario-card purple">
+      <div class="card-header">
+        <div>
+          <div class="card-number">Scenario 3</div>
+          <h2>PBIClient-Based Repos</h2>
+        </div>
+        <span class="effort-chip purple">Varies</span>
+      </div>
+
+      <div class="two-col">
+        <div class="inner-panel">
+          <p class="inner-title">Current state</p>
+          <p style="font-size:14px;margin:0 0 10px;line-height:1.55">
+            Dark mode is <strong>already enabled</strong> in the platform for PBIClient-based repos (e.g., Power BI).
+            The main work is validation and legacy token cleanup.
+          </p>
+          <p class="inner-title">What to do</p>
+          <ol>
+            <li>Run a full validation pass across core user journeys.</li>
+            <li>Focus on: visual regressions, contrast, token mismatches, unreadable states.</li>
+            <li><strong>Leverage the AI tool provided by the Shell team</strong> to detect legacy tokens and get replacement suggestions.</li>
+            <li>Keep a manual review step for edge cases and a11y-sensitive UI.</li>
+          </ol>
+        </div>
+        <div>
+          <div class="inner-panel" style="margin-bottom:12px">
+            <p class="inner-title">Effort scale</p>
+            <ul>
+              <li><strong>Few issues</strong> → short stabilization pass.</li>
+              <li><strong>Many legacy token issues</strong> → additional fix-and-verify cycles.</li>
+            </ul>
+          </div>
+          <div class="inner-panel">
+            <p class="inner-title">Validation checklist</p>
+            <ul class="checklist">
+              <li><span class="check-box"></span>Full dark mode validation pass completed.</li>
+              <li><span class="check-box"></span>AI tool run; legacy token suggestions applied.</li>
+              <li><span class="check-box"></span>Manual review done for edge cases &amp; a11y.</li>
+              <li><span class="check-box"></span>No blocking contrast or readability regressions.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /scenarios -->
+
+  <!-- ── Shared exit criteria ── -->
+  <section class="section">
+    <p class="section-title">Shared Validation Exit Criteria — All Scenarios</p>
+    <div class="exit-grid">
+      <div class="exit-item">
+        <span class="exit-icon">✓</span>
+        No blocking contrast or readability issues.
+      </div>
+      <div class="exit-item">
+        <span class="exit-icon">✓</span>
+        Theme switching works reliably at runtime.
+      </div>
+      <div class="exit-item">
+        <span class="exit-icon">✓</span>
+        No major visual regressions in core user journeys.
+      </div>
+      <div class="exit-item">
+        <span class="exit-icon">✓</span>
+        Accessibility checks pass for key surfaces.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── References ── -->
+  <section class="section">
+    <p class="section-title">References</p>
+    <div class="refs">
+      <div class="ref-item">
+        <code>🔗</code>
+        <span>Shell UX dark theme support guide (internal wiki): <a href="https://dev.azure.com/powerbi/Trident/_wiki/wikis/Trident.wiki/173475/Shell-UX-dark-theme-support-guide" target="_blank">dev.azure.com › Trident.wiki › 173475</a></span>
+      </div>
+      <div class="ref-item">
+        <code>📦</code>
+        <span><code>@trident/extension-client-theme</code> — provides <code>ExtensionThemeProvider</code> for React extensions.</span>
+      </div>
+      <div class="ref-item">
+        <code>📦</code>
+        <span><code>@trident/extension-client</code> — provides <code>ExtensionClientAPI</code> and <code>themeAPI</code> for iframe-based extensions.</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

@@ -3,11 +3,10 @@ from pathlib import Path
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_AUTO_SHAPE_TYPE
-from pptx.enum.text import PP_ALIGN
 from pptx.util import Inches, Pt
 
 
-OUTPUT_PATH = Path(__file__).resolve().parents[1] / "slides" / "dark-mode-private-preview-leadership-review.pptx"
+OUTPUT_PATH = Path(__file__).resolve().parents[1] / "slides" / "dark-mode-private-preview-leadership-review-v2.pptx"
 
 
 def set_run_font(run, size, bold=False, color=(0, 0, 0), name="Aptos"):
@@ -17,7 +16,7 @@ def set_run_font(run, size, bold=False, color=(0, 0, 0), name="Aptos"):
     run.font.color.rgb = RGBColor(*color)
 
 
-def add_textbox(slide, left, top, width, height, text, size, color, bold=False, name="Aptos", margin=0.06, align=PP_ALIGN.LEFT):
+def add_textbox(slide, left, top, width, height, text, size, color, bold=False, margin=0.06):
     box = slide.shapes.add_textbox(left, top, width, height)
     frame = box.text_frame
     frame.word_wrap = True
@@ -25,16 +24,15 @@ def add_textbox(slide, left, top, width, height, text, size, color, bold=False, 
     frame.margin_right = Inches(margin)
     frame.margin_top = Inches(margin)
     frame.margin_bottom = Inches(margin)
-    paragraph = frame.paragraphs[0]
-    paragraph.alignment = align
-    run = paragraph.add_run()
+    p = frame.paragraphs[0]
+    run = p.add_run()
     run.text = text
-    set_run_font(run, size=size, bold=bold, color=color, name=name)
+    set_run_font(run, size=size, bold=bold, color=color)
     return box
 
 
-def add_panel(slide, left, top, width, height, fill_rgb, line_rgb=(220, 226, 232), radius_shape=MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE):
-    panel = slide.shapes.add_shape(radius_shape, left, top, width, height)
+def add_panel(slide, left, top, width, height, fill_rgb, line_rgb=(220, 226, 232)):
+    panel = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE, left, top, width, height)
     panel.fill.solid()
     panel.fill.fore_color.rgb = RGBColor(*fill_rgb)
     panel.line.color.rgb = RGBColor(*line_rgb)
@@ -42,7 +40,7 @@ def add_panel(slide, left, top, width, height, fill_rgb, line_rgb=(220, 226, 232
     return panel
 
 
-def add_bullet_list(slide, left, top, width, height, items, font_size=14, color=(22, 33, 43)):
+def add_bullets(slide, left, top, width, height, items, font_size=12, color=(22, 33, 43)):
     box = slide.shapes.add_textbox(left, top, width, height)
     frame = box.text_frame
     frame.word_wrap = True
@@ -51,222 +49,231 @@ def add_bullet_list(slide, left, top, width, height, items, font_size=14, color=
     frame.margin_top = Inches(0.04)
     frame.margin_bottom = Inches(0.04)
     frame.clear()
-    for index, item in enumerate(items):
-        paragraph = frame.paragraphs[0] if index == 0 else frame.add_paragraph()
-        paragraph.level = 0
-        paragraph.bullet = True
-        paragraph.space_after = Pt(7)
-        run = paragraph.add_run()
-        run.text = item
+    for i, text in enumerate(items):
+        p = frame.paragraphs[0] if i == 0 else frame.add_paragraph()
+        p.level = 0
+        p.bullet = True
+        p.space_after = Pt(6)
+        run = p.add_run()
+        run.text = text
         set_run_font(run, size=font_size, color=color)
     return box
 
 
-def add_table_header(slide, left, top, col_widths, headers, colors):
-    """Draw table header row with columns."""
-    current_left = left
-    for i, (width, header, color) in enumerate(zip(col_widths, headers, colors)):
-        cell = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.RECTANGLE, current_left, top, width, Inches(0.28))
-        cell.fill.solid()
-        cell.fill.fore_color.rgb = RGBColor(*color)
-        cell.line.color.rgb = RGBColor(150, 160, 170)
-        cell.line.width = Pt(0.5)
-        add_textbox(slide, current_left + Inches(0.06), top + Inches(0.05), width - Inches(0.12), Inches(0.18), header, 9.5, (22, 33, 43), bold=True)
-        current_left += width
+def add_banner(slide, label):
+    top_band = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(0.34))
+    top_band.fill.solid()
+    top_band.fill.fore_color.rgb = RGBColor(21, 35, 46)
+    top_band.line.fill.background()
+
+    right_band = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.RECTANGLE, Inches(12.95), Inches(0), Inches(0.383), Inches(7.5))
+    right_band.fill.solid()
+    right_band.fill.fore_color.rgb = RGBColor(15, 108, 189)
+    right_band.line.fill.background()
+
+    add_textbox(slide, Inches(0.45), Inches(0.16), Inches(4.2), Inches(0.22), label, 10, (255, 255, 255), bold=True)
 
 
-def add_table_row(slide, left, top, col_widths, data, is_alternate=False):
-    """Draw a single table row with three columns."""
-    bg_color = (247, 249, 250) if is_alternate else (255, 255, 255)
-    current_left = left
-    for i, (width, value) in enumerate(zip(col_widths, data)):
-        cell = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.RECTANGLE, current_left, top, width, Inches(0.32))
-        cell.fill.solid()
-        cell.fill.fore_color.rgb = RGBColor(*bg_color)
-        cell.line.color.rgb = RGBColor(215, 220, 228)
-        cell.line.width = Pt(0.5)
-        
-        font_size = 9 if i == 2 else 10
-        font_bold = i == 2
-        font_color = (15, 108, 189) if i == 2 else (22, 33, 43)
-        
-        add_textbox(slide, current_left + Inches(0.06), top + Inches(0.07), width - Inches(0.12), Inches(0.18), value, font_size, font_color, bold=font_bold)
-        current_left += width
-
-
-def build_slide():
-    prs = Presentation()
-    prs.slide_width = Inches(13.333)
-    prs.slide_height = Inches(7.5)
+def add_slide_one(prs):
     slide = prs.slides.add_slide(prs.slide_layouts[6])
+    slide.background.fill.solid()
+    slide.background.fill.fore_color.rgb = RGBColor(244, 239, 230)
 
-    bg = slide.background.fill
-    bg.solid()
-    bg.fore_color.rgb = RGBColor(244, 239, 230)
-
-    # Accent bands
-    band_top = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.RECTANGLE, Inches(0), Inches(0), Inches(13.333), Inches(0.34))
-    band_top.fill.solid()
-    band_top.fill.fore_color.rgb = RGBColor(21, 35, 46)
-    band_top.line.fill.background()
-
-    band_right = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.RECTANGLE, Inches(12.93), Inches(0), Inches(0.403), Inches(7.5))
-    band_right.fill.solid()
-    band_right.fill.fore_color.rgb = RGBColor(15, 108, 189)
-    band_right.line.fill.background()
-
-    add_textbox(
-        slide,
-        Inches(0.45),
-        Inches(0.18),
-        Inches(2.7),
-        Inches(0.24),
-        "LEADERSHIP REVIEW | FABRIC DARK MODE",
-        10,
-        (255, 255, 255),
-        bold=True,
-    )
+    add_banner(slide, "LEADERSHIP REVIEW | FABRIC DARK MODE")
 
     add_textbox(
         slide,
         Inches(0.5),
-        Inches(0.65),
-        Inches(7.55),
-        Inches(1.0),
-        "Private Preview Plan: deliver a credible, customer-visible dark mode experience in Fabric by 5/29/2026.",
+        Inches(0.62),
+        Inches(8.0),
+        Inches(0.95),
+        "Current Status: Private Preview is on track with a clear and controlled scope.",
+        25,
+        (22, 33, 43),
+        bold=True,
+    )
+    add_textbox(
+        slide,
+        Inches(0.52),
+        Inches(1.48),
+        Inches(8.0),
+        Inches(0.72),
+        "Dark mode now has stable adoption signals in private preview scope, with safe fallback behavior for surfaces not yet onboarded.",
+        12,
+        (83, 97, 112),
+    )
+
+    add_panel(slide, Inches(9.05), Inches(0.62), Inches(3.63), Inches(1.5), (21, 35, 46), line_rgb=(21, 35, 46))
+    add_textbox(slide, Inches(9.24), Inches(0.83), Inches(3.2), Inches(0.2), "PRIVATE PREVIEW TARGET", 9.5, (202, 217, 227), bold=True)
+    add_textbox(slide, Inches(9.2), Inches(1.03), Inches(3.2), Inches(0.42), "May 29, 2026", 24, (255, 255, 255), bold=True)
+    add_textbox(slide, Inches(9.2), Inches(1.43), Inches(3.2), Inches(0.38), "Status: On track for planned private preview milestone.", 10.5, (221, 231, 238))
+
+    add_panel(slide, Inches(0.45), Inches(2.28), Inches(3.45), Inches(4.35), (255, 252, 247))
+    add_textbox(slide, Inches(0.62), Inches(2.43), Inches(2.8), Inches(0.22), "PRIVATE PREVIEW SCOPE", 10, (83, 97, 112), bold=True)
+    scope_items = [
+        "Fabric Shell",
+        "Workloads Hub L1",
+        "OneLake Category",
+        "Lakehouse",
+        "Variable Library",
+        "Notebook",
+        "Real-Time Hub",
+        "Kusto",
+        "Warehouse and Azure SQL DW",
+        "Data Science",
+    ]
+    add_bullets(slide, Inches(0.6), Inches(2.72), Inches(3.1), Inches(3.7), scope_items, font_size=11)
+
+    add_panel(slide, Inches(4.05), Inches(2.28), Inches(4.8), Inches(2.03), (255, 252, 247))
+    add_textbox(slide, Inches(4.22), Inches(2.43), Inches(4.3), Inches(0.22), "CURRENT ADOPTION STATUS", 10, (83, 97, 112), bold=True)
+    status_items = [
+        "Strong signal: bug bash completed, no sev1/sev2 blockers.",
+        "Activation path works: users can turn on dark mode and persist preference.",
+        "Scope is intentionally controlled for quality during preview.",
+    ]
+    add_bullets(slide, Inches(4.18), Inches(2.73), Inches(4.45), Inches(1.43), status_items, font_size=10.5)
+
+    add_panel(slide, Inches(4.05), Inches(4.5), Inches(4.8), Inches(2.13), (255, 252, 247))
+    add_textbox(slide, Inches(4.22), Inches(4.65), Inches(4.3), Inches(0.22), "WHY THIS MATTERS", 10, (83, 97, 112), bold=True)
+    value_items = [
+        "Reduces eye strain in long creator sessions.",
+        "Improves platform modernity and premium perception.",
+        "Builds confidence with consistent theme behavior in core flows.",
+    ]
+    add_bullets(slide, Inches(4.18), Inches(4.95), Inches(4.45), Inches(1.46), value_items, font_size=10.5)
+
+    add_panel(slide, Inches(9.05), Inches(2.28), Inches(3.63), Inches(4.35), (255, 252, 247))
+    add_textbox(slide, Inches(9.24), Inches(2.43), Inches(3.15), Inches(0.22), "PRIVATE PREVIEW STORYLINE", 10, (83, 97, 112), bold=True)
+    story_items = [
+        "Enable dark mode from Settings.",
+        "Refresh and verify preference persistence.",
+        "Navigate key shell surfaces and supported artifacts.",
+        "Show safe fallback where onboarding is not yet complete.",
+    ]
+    add_bullets(slide, Inches(9.2), Inches(2.72), Inches(3.2), Inches(1.6), story_items, font_size=10)
+
+    add_textbox(
+        slide,
+        Inches(9.2),
+        Inches(4.5),
+        Inches(3.2),
+        Inches(1.75),
+        "Private preview validates quality and readiness, while full platform consistency depends on the next onboarding wave after preview.",
+        10.2,
+        (83, 97, 112),
+    )
+
+
+def add_table(slide, left, top, col_widths, headers, rows, row_height=0.36, font_size=8.7):
+    h = Inches(0.34)
+    x = left
+    for i, head in enumerate(headers):
+        shape = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.RECTANGLE, x, top, col_widths[i], h)
+        shape.fill.solid()
+        shape.fill.fore_color.rgb = RGBColor(207, 220, 234)
+        shape.line.color.rgb = RGBColor(150, 160, 170)
+        shape.line.width = Pt(0.5)
+        add_textbox(slide, x + Inches(0.05), top + Inches(0.05), col_widths[i] - Inches(0.08), Inches(0.22), head, 9, (22, 33, 43), bold=True)
+        x += col_widths[i]
+
+    y = top + h
+    row_h = Inches(row_height)
+    for r, row in enumerate(rows):
+        row_color = (255, 255, 255) if r % 2 == 0 else (247, 249, 250)
+        x = left
+        for i, val in enumerate(row):
+            cell = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.RECTANGLE, x, y, col_widths[i], row_h)
+            cell.fill.solid()
+            cell.fill.fore_color.rgb = RGBColor(*row_color)
+            cell.line.color.rgb = RGBColor(215, 220, 228)
+            cell.line.width = Pt(0.5)
+            add_textbox(slide, x + Inches(0.05), y + Inches(0.04), col_widths[i] - Inches(0.08), row_h - Inches(0.06), str(val), font_size, (22, 33, 43), bold=False)
+            x += col_widths[i]
+        y += row_h
+
+
+def add_slide_two(prs):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    slide.background.fill.solid()
+    slide.background.fill.fore_color.rgb = RGBColor(244, 239, 230)
+
+    add_banner(slide, "LEADERSHIP REVIEW | FULL ADOPTION PLAN")
+
+    add_textbox(
+        slide,
+        Inches(0.5),
+        Inches(0.62),
+        Inches(8.65),
+        Inches(0.9),
+        "Post-Preview Onboarding: close the gap and achieve full adoption by Sep 30, 2026.",
         24,
         (22, 33, 43),
         bold=True,
     )
     add_textbox(
         slide,
-        Inches(0.55),
-        Inches(1.53),
-        Inches(7.35),
-        Inches(0.78),
-        "Dark mode reduces eye strain, modernizes the Fabric shell, and gives customers a consistent visual experience across the shell and priority creator workloads in private preview scope.",
-        12.5,
+        Inches(0.52),
+        Inches(1.43),
+        Inches(8.65),
+        Inches(0.65),
+        "Execution objective: condensed onboarding motion across remaining teams to minimize the mixed light/dark UI window.",
+        12,
         (83, 97, 112),
     )
 
-    # Date card
-    add_panel(slide, Inches(9.12), Inches(0.62), Inches(3.55), Inches(1.42), (21, 35, 46), line_rgb=(21, 35, 46))
-    add_textbox(slide, Inches(9.34), Inches(0.8), Inches(2.9), Inches(0.22), "PRIVATE PREVIEW TARGET", 9.5, (202, 217, 227), bold=True)
-    add_textbox(slide, Inches(9.3), Inches(1.03), Inches(3.0), Inches(0.44), "May 29, 2026", 24, (255, 255, 255), bold=True)
-    add_textbox(slide, Inches(9.3), Inches(1.45), Inches(3.0), Inches(0.34), "As of May 11: adoption on track. Align on scope, readiness bar, and preview message.", 10.5, (221, 231, 238))
+    add_panel(slide, Inches(9.05), Inches(0.62), Inches(3.63), Inches(1.5), (21, 35, 46), line_rgb=(21, 35, 46))
+    add_textbox(slide, Inches(9.24), Inches(0.83), Inches(3.2), Inches(0.2), "FULL ADOPTION TARGET", 9.5, (202, 217, 227), bold=True)
+    add_textbox(slide, Inches(9.2), Inches(1.03), Inches(3.2), Inches(0.42), "Sep 30, 2026", 24, (255, 255, 255), bold=True)
+    add_textbox(slide, Inches(9.2), Inches(1.43), Inches(3.2), Inches(0.38), "Goal: pull deferred teams into RB semester delivery.", 10.5, (221, 231, 238))
 
-    # Left scope panel
-    add_panel(slide, Inches(0.45), Inches(2.28), Inches(3.2), Inches(4.35), (255, 252, 247))
-    add_textbox(slide, Inches(0.63), Inches(2.43), Inches(2.4), Inches(0.25), "IN PREVIEW SCOPE", 10, (83, 97, 112), bold=True)
-    scope_items = [
-        "Fabric Shell | Train 5.1",
-        "Workloads Hub L1 | Released",
-        "OneLake Category | Train 5.2",
-        "Lakehouse | Released",
-        "Variable Library | Train 4.2",
-        "Notebook | Train 5.3",
-        "Real-Time Hub | Train 3.1",
-        "Kusto | Independent deployment",
-        "Warehouse & Azure SQL DW | Released",
-        "Data Science | Train 3.1",
+    add_panel(slide, Inches(0.45), Inches(2.2), Inches(8.45), Inches(2.95), (255, 252, 247))
+    add_textbox(slide, Inches(0.62), Inches(2.35), Inches(6.8), Inches(0.22), "POST-PREVIEW ONBOARDING ITEMS AND TIMELINE (RB + POST-RB)", 10, (83, 97, 112), bold=True)
+    headers = ["Team", "Scenario", "Solution", "Cost", "Prior Plan"]
+    rows = [
+        ["OneLake Catalog - Govern", "RB", "Onboard in RB train", "~1-2 weeks", "RB"],
+        ["Deployment Pipelines", "RB", "Onboard in RB train", "~1-2 weeks", "RB"],
+        ["Event Stream", "RB", "Onboard in RB train", "~1-2 weeks", "RB"],
+        ["Azure Data Factory", "RB", "Onboard in RB train", "~1-2 weeks", "RB"],
+        ["Spark Job Definition", "RB", "Onboard in RB train", "~1-2 weeks", "RB"],
+        ["Power BI", "PBIClient", "Full validation + AI legacy token fixes", "Variable", "Post-RB"],
+        ["Dataflow", "React + Fluent + 1JS", "Upgrade + ExtensionThemeProvider", "~1 day", "Post-RB"],
+        ["Data Activator", "TBD", "Confirm scenario and run standard playbook", "TBD", "RB or Post-RB"],
+        ["Functions Hub", "TBD", "Confirm scenario and run standard playbook", "TBD", "Post-RB"],
     ]
-    add_bullet_list(slide, Inches(0.62), Inches(2.76), Inches(2.82), Inches(3.62), scope_items, font_size=11.2)
+    col_widths = [Inches(1.45), Inches(1.45), Inches(2.9), Inches(0.95), Inches(1.3)]
+    add_table(slide, Inches(0.6), Inches(2.67), col_widths, headers, rows, row_height=0.26, font_size=7.8)
 
-    # Middle adoption status panel
-    add_panel(slide, Inches(3.82), Inches(2.28), Inches(5.1), Inches(4.35), (255, 252, 247))
-    add_textbox(slide, Inches(4.0), Inches(2.43), Inches(3.6), Inches(0.25), "DARK MODE ADOPTION STATUS (MAY 11)", 10, (83, 97, 112), bold=True)
-
-    chips = [
-        (Inches(4.0), Inches(2.78), Inches(2.22), Inches(0.88), (231, 244, 231), "Adoption Signal: Strong", "Bug bash complete with no sev1 or sev2 blockers; pilot signal is stable."),
-        (Inches(6.4), Inches(2.78), Inches(2.22), Inches(0.88), (232, 241, 251), "Activation Path Working", "Users enable in Settings, persist after refresh, and remain dark across shell entry points."),
-        (Inches(4.0), Inches(3.79), Inches(2.22), Inches(0.88), (232, 241, 251), "Cross-Surface Adoption", "Supported workloads declare dark mode; unsupported experiences fall back safely."),
-        (Inches(6.4), Inches(3.79), Inches(2.22), Inches(0.88), (250, 242, 220), "Adoption Is Scoped", "A strong first milestone focused on high-value surfaces, not full Fabric-wide completion."),
+    add_panel(slide, Inches(9.05), Inches(2.2), Inches(3.63), Inches(2.95), (255, 252, 247))
+    add_textbox(slide, Inches(9.24), Inches(2.35), Inches(3.2), Inches(0.22), "ACCELERATION REQUIRED BEFORE 9/30", 10, (83, 97, 112), bold=True)
+    gap_headers = ["Team", "Owner", "Current Plan"]
+    gap_rows = [
+        ["Data Activator", "James Hutton", "RB or Post-RB"],
+        ["Functions Hub", "Sunitha Muthukrishna", "Post-RB"],
+        ["Power BI", "Kay Unkroth", "Post-RB"],
+        ["Dataflow", "Miguel Escobar", "Post-RB"],
     ]
-    for left, top, width, height, color, title, body in chips:
-        add_panel(slide, left, top, width, height, color, line_rgb=(220, 226, 232))
-        add_textbox(slide, left + Inches(0.1), top + Inches(0.07), width - Inches(0.2), Inches(0.18), title, 10.5, (22, 33, 43), bold=True)
-        add_textbox(slide, left + Inches(0.1), top + Inches(0.28), width - Inches(0.2), Inches(0.48), body, 8.8, (22, 33, 43))
+    gap_col_widths = [Inches(1.18), Inches(1.35), Inches(0.9)]
+    add_table(slide, Inches(9.18), Inches(2.67), gap_col_widths, gap_headers, gap_rows, row_height=0.36, font_size=7.8)
+    add_textbox(slide, Inches(9.18), Inches(4.48), Inches(3.3), Inches(0.5), "Gap highlight: these four teams must be pulled into the 9/30 plan to reduce the mixed light/dark UI window.", 9, (180, 35, 24), bold=True)
 
-    add_textbox(slide, Inches(4.02), Inches(4.95), Inches(4.45), Inches(0.22), "CUSTOMER STORY FOR LEADERSHIP", 10, (83, 97, 112), bold=True)
-    story_items = [
-        "Customer turns on dark mode in Settings and sees the shell switch immediately.",
-        "Preference persists after refresh and continues across Home, Browse, Workspace list, and Monitoring Hub.",
-        "Supported workloads deliver dark mode; unsupported experiences fall back safely instead of shipping a broken mixed theme.",
+    add_panel(slide, Inches(0.45), Inches(5.32), Inches(12.23), Inches(1.95), (255, 252, 247))
+    add_textbox(slide, Inches(0.62), Inches(5.47), Inches(5.8), Inches(0.22), "FULL ADOPTION PLAN", 10, (83, 97, 112), bold=True)
+    plan_items = [
+        "Step 1 (Week 1): Sync with all four teams and lock scenario mapping. Known: Power BI -> Scenario 1, Dataflow -> Scenario 2.",
+        "Step 2 (Week 1-2): Get commitment from each team on completion by 9/30, with named blockers and escalation owner.",
+        "Step 3 (Week 2+): Run regular checkpoint review and keep a single cross-team tracker to avoid drift.",
+        "Step 4 (By 9/30): Exit gate for full adoption: implementation done, key flow validation complete, no blocking inconsistency defects.",
     ]
-    add_bullet_list(slide, Inches(4.0), Inches(5.22), Inches(4.55), Inches(1.1), story_items, font_size=10)
+    add_bullets(slide, Inches(0.6), Inches(5.75), Inches(11.95), Inches(1.33), plan_items, font_size=10.2)
 
-    # Right customer selection and post-preview plan panel
-    add_panel(slide, Inches(9.12), Inches(2.28), Inches(3.55), Inches(4.35), (255, 252, 247))
-    add_textbox(slide, Inches(9.3), Inches(2.43), Inches(3.0), Inches(0.25), "PRIVATE PREVIEW CUSTOMER SELECTION", 10, (83, 97, 112), bold=True)
-    add_textbox(
-        slide,
-        Inches(9.28),
-        Inches(2.69),
-        Inches(3.05),
-        Inches(0.34),
-        "Target preview customers who maximize visible value and fast product learning in supported dark-mode workloads.",
-        8.7,
-        (83, 97, 112),
-    )
-    add_panel(slide, Inches(9.28), Inches(3.04), Inches(3.05), Inches(1.02), (232, 241, 251), line_rgb=(210, 223, 237))
-    selection_items = [
-        "Active creators in supported workloads: Lakehouse, Warehouse, Notebook, Real-Time Hub, Data Science, and Kusto.",
-        "Customers with long working sessions where eye strain reduction and visual comfort are immediately noticeable.",
-        "Design partners willing to give fast feedback on shell consistency, persistence, and extension transitions.",
-    ]
-    add_bullet_list(slide, Inches(9.34), Inches(3.12), Inches(2.9), Inches(0.82), selection_items, font_size=8.4)
-    add_textbox(slide, Inches(9.3), Inches(4.14), Inches(3.0), Inches(0.22), "POST PRIVATE PREVIEW PLAN", 10, (83, 97, 112), bold=True)
-    add_textbox(
-        slide,
-        Inches(9.28),
-        Inches(4.35),
-        Inches(3.05),
-        Inches(0.24),
-        "Next-wave onboarding after the 5/29 preview milestone, based on current owners and target release buckets.",
-        8.4,
-        (83, 97, 112),
-    )
-    plan_rows = [
-        ("Functions Hub", "Sunitha Muthukrishna", "Post-RB"),
-        ("OneLake Catalog - Govern", "Naama Tsafrir", "Q2 RB"),
-        ("Deployment Pipelines", "Nimrod Shalit", "Q2 RB"),
-        ("Power BI", "Kay Unkroth", "Post-RB"),
-        ("Data flow", "Miguel Escobar", "Post-RB"),
-        ("Event Stream", "Alicia Li", "Q1 RB"),
-        ("Azure Data Factory", "Hao Chen", "Q1 RB"),
-        ("Data Activator", "Amanda Rivera", "Q2 RB or Post-RB"),
-        ("Spark Job Definition", "Qixiao Wang", "Q2 RB"),
-    ]
-    
-    table_left = Inches(9.28)
-    table_top = Inches(4.63)
-    col_widths = [Inches(1.6), Inches(1.05), Inches(0.4)]
-    headers = ["Item", "Owner", "Plan"]
-    header_colors = [(207, 220, 234), (207, 220, 234), (207, 220, 234)]
-    
-    add_table_header(slide, table_left, table_top, col_widths, headers, header_colors)
-    
-    row_top = table_top + Inches(0.28)
-    for idx, (item, owner, plan) in enumerate(plan_rows):
-        add_table_row(slide, table_left, row_top, col_widths, [item, owner, plan], is_alternate=(idx % 2 == 1))
-        row_top += Inches(0.32)
 
-    # Footer note
-    footer = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE, Inches(0.45), Inches(6.78), Inches(12.2), Inches(0.43))
-    footer.fill.solid()
-    footer.fill.fore_color.rgb = RGBColor(250, 247, 240)
-    footer.line.color.rgb = RGBColor(226, 219, 206)
-    footer.line.width = Pt(1)
-    add_textbox(
-        slide,
-        Inches(0.62),
-        Inches(6.88),
-        Inches(11.8),
-        Inches(0.16),
-        "Private preview customer selection focuses on supported creator workloads and fast-feedback partners; the items at right show the next expansion wave after launch.",
-        9.5,
-        (83, 97, 112),
-    )
+def build_deck():
+    prs = Presentation()
+    prs.slide_width = Inches(13.333)
+    prs.slide_height = Inches(7.5)
+
+    add_slide_one(prs)
+    add_slide_two(prs)
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     prs.save(OUTPUT_PATH)
@@ -274,5 +281,5 @@ def build_slide():
 
 
 if __name__ == "__main__":
-    output = build_slide()
-    print(output)
+    out = build_deck()
+    print(out)

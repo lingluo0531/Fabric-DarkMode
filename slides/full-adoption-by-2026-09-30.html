@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Achieve Full Adoption by 9/30</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --panel: rgba(255, 252, 247, 0.88);
+      --panel-strong: rgba(255, 252, 247, 0.95);
+      --ink: #16212b;
+      --muted: #536170;
+      --line: rgba(22, 33, 43, 0.12);
+      --accent: #0f6cbd;
+      --success: #107c10;
+      --warn: #9a6700;
+      --risk: #b42318;
+      --shadow: 0 24px 70px rgba(29, 40, 52, 0.16);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: "Segoe UI", "Aptos", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(15, 108, 189, 0.18), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(16, 124, 16, 0.14), transparent 28%),
+        linear-gradient(135deg, #e8dcc8 0%, #f7f2ea 46%, #e7efe9 100%);
+      padding: 24px;
+    }
+
+    .slide {
+      width: min(1480px, calc(100vw - 48px));
+      border-radius: 28px;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.56), rgba(255, 255, 255, 0.18)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.84));
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      padding: 30px 34px;
+      display: grid;
+      grid-template-rows: auto auto auto 1fr;
+      gap: 14px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(255, 255, 255, 0.74);
+      border: 1px solid rgba(15, 108, 189, 0.16);
+      width: fit-content;
+    }
+
+    .header {
+      display: grid;
+      grid-template-columns: 1.55fr 0.85fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+
+    .subhead {
+      margin-top: 10px;
+      color: var(--muted);
+      line-height: 1.4;
+      font-size: 15px;
+      max-width: 900px;
+    }
+
+    .target {
+      border-radius: 18px;
+      padding: 16px;
+      background: linear-gradient(160deg, #15232e 0%, #223546 100%);
+      color: #f7fbff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .target::after {
+      content: "";
+      position: absolute;
+      inset: auto -34px -42px auto;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(132, 197, 255, 0.42), transparent 68%);
+    }
+
+    .target-label {
+      font-size: 12px;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      opacity: 0.8;
+      margin-bottom: 10px;
+    }
+
+    .target-date {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 8px;
+    }
+
+    .target-note {
+      font-size: 13px;
+      line-height: 1.35;
+      opacity: 0.92;
+    }
+
+    .pill-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .pill {
+      border-radius: 14px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .pill strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 14px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .panel {
+      border-radius: 18px;
+      padding: 14px;
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
+      min-height: 0;
+      overflow: auto;
+    }
+
+    .panel-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th {
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+      padding: 7px 9px;
+      border-bottom: 2px solid var(--line);
+    }
+
+    td {
+      padding: 8px 9px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      line-height: 1.35;
+    }
+
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .tag.ok { background: rgba(16, 124, 16, 0.12); color: var(--success); }
+    .tag.warn { background: rgba(154, 103, 0, 0.14); color: var(--warn); }
+    .tag.risk { background: rgba(180, 35, 24, 0.12); color: var(--risk); }
+
+    .steps {
+      display: grid;
+      gap: 10px;
+    }
+
+    .step {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.74);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+
+    .step strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .step p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.38;
+      color: var(--ink);
+    }
+
+    .kpis {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .kpi {
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.76);
+      padding: 8px 9px;
+    }
+
+    .kpi-value {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 2px;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+
+    .footer-note {
+      border-radius: 12px;
+      border: 1px solid rgba(180, 35, 24, 0.22);
+      background: rgba(180, 35, 24, 0.06);
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.38;
+    }
+
+    @media (max-width: 1240px) {
+      body { padding: 10px; }
+      .slide { width: 100%; padding: 16px; }
+      .header, .layout, .pill-row, .kpis { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <div class="eyebrow">Fabric Dark Mode | Execution Plan</div>
+
+    <section class="header">
+      <div>
+        <h1>How to Achieve Full Adoption (by 9/30) While Keeping Onboarding Condensed and Minimizing the UI Inconsistency Window</h1>
+        <div class="subhead">
+          We can hit a full-adoption target by moving all Post-RB teams into a single compressed execution motion: fast scenario confirmation, fixed weekly checkpoints, and explicit risk escalation. The objective is not just completion, but a shorter mixed light/dark experience period for customers.
+        </div>
+      </div>
+      <aside class="target">
+        <div class="target-label">Target Completion</div>
+        <div class="target-date">Sep 30, 2026</div>
+        <div class="target-note">Success definition: all four deferred teams have committed scenario paths, approved plans, and delivery dates within the RB semester window.</div>
+      </aside>
+    </section>
+
+    <section class="pill-row">
+      <div class="pill">
+        <strong>Condensed Onboarding Principle</strong>
+        Execute scenario triage in one pass, then run delivery in parallel tracks instead of serial team-by-team onboarding.
+      </div>
+      <div class="pill">
+        <strong>UI Consistency Principle</strong>
+        Prioritize surfaces with highest user navigation frequency to reduce visible light/dark switching early.
+      </div>
+      <div class="pill">
+        <strong>Leadership Lever</strong>
+        Use explicit cross-team deadline alignment to prevent further drift into Post-RB windows.
+      </div>
+    </section>
+
+    <section class="layout">
+      <article class="panel">
+        <div class="panel-title">Scenario, Solution, Cost, and Prior Team Plan</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Team</th>
+              <th>Scenario</th>
+              <th>Solution</th>
+              <th>Cost</th>
+              <th>Prior Plan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Power BI</td>
+              <td>PBIClient-based repo</td>
+              <td>Dark mode already enabled. Run full validation and use AI tooling to fix legacy tokens.</td>
+              <td>Variable (issue-driven)</td>
+              <td><span class="tag risk">Post-RB</span></td>
+            </tr>
+            <tr>
+              <td>Dataflow</td>
+              <td>React + Fluent UI v8/v9 + 1JS ribbon</td>
+              <td>Upgrade packages and wrap with ExtensionThemeProvider.</td>
+              <td>About 1 day</td>
+              <td><span class="tag risk">Post-RB</span></td>
+            </tr>
+            <tr>
+              <td>Data Activator</td>
+              <td>To be confirmed</td>
+              <td>Map to one of three patterns and apply standard onboarding playbook.</td>
+              <td>TBD after scenario confirm</td>
+              <td><span class="tag warn">RB or Post-RB</span></td>
+            </tr>
+            <tr>
+              <td>Functions Hub</td>
+              <td>To be confirmed</td>
+              <td>Map to one of three patterns and apply standard onboarding playbook.</td>
+              <td>TBD after scenario confirm</td>
+              <td><span class="tag risk">Post-RB</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="kpi-value">4</div>
+            <div class="kpi-label">Deferred teams to close by 9/30</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-value">2</div>
+            <div class="kpi-label">Scenarios already identified</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-value">2</div>
+            <div class="kpi-label">Scenarios pending confirmation</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-title">Next-Step Plan to Pull Delivery into RB Semester</div>
+        <div class="steps">
+          <div class="step">
+            <strong>Step 1 (Week 1): Scenario Confirmation with All Four Teams</strong>
+            <p>Complete direct syncs with Power BI, Dataflow, Data Activator, and Functions Hub. Lock final scenario type, owner, and remaining engineering scope. Current known mapping: Power BI -> Scenario 1; Dataflow -> Scenario 2; other two pending.</p>
+          </div>
+          <div class="step">
+            <strong>Step 2 (Week 1-2): Re-baseline to 9/30 with Named Risks</strong>
+            <p>For each team, set a concrete completion date on or before 9/30. Capture blockers, external dependencies, and escalation owners. Any team that cannot commit requires leadership-level decision in the same week.</p>
+          </div>
+          <div class="step">
+            <strong>Step 3 (Week 2+): Regular Execution Cadence</strong>
+            <p>Run regular checkpoint review and keep a single cross-team tracker to avoid drift.</p>
+          </div>
+          <div class="step">
+            <strong>Step 4 (By 9/30): Exit Gate for Full Adoption</strong>
+            <p>All four teams meet definition of done: implementation complete, core flows validated in dark mode, no blocking UI inconsistency defects in high-traffic surfaces.</p>
+          </div>
+        </div>
+
+        <div class="footer-note">
+          <strong>Critical Outcome:</strong> A compressed schedule reduces the period where customers see mixed light/dark experiences across workloads, improving perceived quality and confidence in Fabric dark mode.
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
