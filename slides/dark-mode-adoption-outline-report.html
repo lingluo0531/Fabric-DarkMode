@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dark Mode Adoption Roadmap Report</title>
+  <style>
+    :root {
+      --bg-1: #f5f8ff;
+      --bg-2: #eef3ea;
+      --ink: #182230;
+      --muted: #4a5a70;
+      --line: #d8e1ee;
+      --brand: #0d6a8b;
+      --brand-2: #1f8c6c;
+      --warn: #c26f17;
+      --risk: #b34545;
+      --ok: #2c7a50;
+      --card: rgba(255, 255, 255, 0.78);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Noto Sans", "PingFang SC", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 600px at 90% -10%, #d9f2ed 0%, transparent 60%),
+        radial-gradient(900px 500px at -10% 20%, #dfeaff 0%, transparent 55%),
+        linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 34px 24px 48px;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, #0f3a52, #0f6b65);
+      color: #f7fbff;
+      border-radius: 18px;
+      padding: 28px 30px;
+      box-shadow: 0 14px 36px rgba(13, 48, 76, 0.24);
+      animation: rise 0.7s ease-out;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 12px 0 8px;
+      font-size: clamp(24px, 3.1vw, 38px);
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 880px;
+      color: #deedf8;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .kpis {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .kpi {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+
+    .kpi strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    .kpi span {
+      font-size: 12px;
+      opacity: 0.92;
+    }
+
+    .grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 8px 22px rgba(26, 53, 84, 0.08);
+      animation: rise 0.8s ease both;
+    }
+
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      color: #173f59;
+    }
+
+    .chip {
+      display: inline-block;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid;
+    }
+
+    .chip.ok {
+      color: var(--ok);
+      background: #eef9f2;
+      border-color: #bfe8cf;
+    }
+
+    .chip.risk {
+      color: #8b2c2c;
+      background: #fff0f0;
+      border-color: #f2c2c2;
+    }
+
+    .snapshot-grid {
+      margin-top: 6px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .snapshot-col {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid #dbe5f1;
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .snapshot-col:nth-child(1) {
+      background: #f2fbf4;
+      border-color: #bfe6cb;
+    }
+
+    .snapshot-col:nth-child(2) {
+      background: #f2f7ff;
+      border-color: #bfd4f5;
+    }
+
+    .snapshot-col:nth-child(3) {
+      background: #fff2f2;
+      border-color: #efb9b9;
+    }
+
+    .snapshot-col h3 {
+      margin: 0;
+      font-size: 15px;
+      color: #173f59;
+    }
+
+    .snapshot-col:nth-child(1) h3 {
+      color: #236842;
+    }
+
+    .snapshot-col:nth-child(2) h3 {
+      color: #1f4d8a;
+    }
+
+    .snapshot-col:nth-child(3) h3 {
+      color: #8f2b2b;
+    }
+
+    .snapshot-col ul {
+      margin-top: 8px;
+    }
+
+    ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      border-bottom: 1px solid #dbe5f1;
+      padding: 10px 8px;
+      vertical-align: top;
+    }
+
+    th {
+      color: #1f4d69;
+      font-weight: 700;
+      background: #f4f8ff;
+    }
+
+    .risk-row td {
+      background: #fff4f4;
+    }
+
+    .risk-row td:first-child {
+      border-left: 4px solid #d05656;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+
+    .status-pill.risk {
+      color: #8f2a2a;
+      background: #ffe8e8;
+      border-color: #efb4b4;
+    }
+
+    .priority {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .item {
+      border: 1px solid #d4e0ef;
+      border-radius: 12px;
+      background: #fbfdff;
+      padding: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .item::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      background: linear-gradient(180deg, var(--brand), var(--brand-2));
+    }
+
+    .item h3 {
+      margin: 0;
+      font-size: 16px;
+      color: #164865;
+      padding-left: 8px;
+    }
+
+    .item-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-right: 4px;
+    }
+
+    .risk-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+
+    .risk-badge.high {
+      color: #9a3030;
+      background: #ffecec;
+      border-color: #f3b8b8;
+    }
+
+    .risk-badge.medium {
+      color: #8b6515;
+      background: #fff8e7;
+      border-color: #f0dd9f;
+    }
+
+    .meta {
+      margin: 6px 0;
+      padding-left: 8px;
+      color: #3f566f;
+      font-size: 13px;
+    }
+
+    .meta b {
+      color: #223a52;
+    }
+
+    .detail-list {
+      margin: 8px 0 0;
+      padding-left: 24px;
+      font-size: 13px;
+      color: #3f566f;
+      line-height: 1.55;
+    }
+
+    .detail-list li {
+      margin: 4px 0;
+    }
+
+    .detail-list ul {
+      margin-top: 6px;
+      padding-left: 18px;
+    }
+
+    .foot {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #556b83;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid,
+      .priority {
+        grid-template-columns: 1fr;
+      }
+
+      .snapshot-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <span class="tag">Fabric Dark Mode Reporting</span>
+      <h1>Dark Mode Adoption Roadmap</h1>
+      <p class="subtitle">
+        Private Preview remains targeted for May 29, 2026. Core shell and curated high-priority workloads are in scope,
+        while a second-track set of workloads requires post-RB execution and risk-managed follow-up.
+      </p>
+      <div class="kpis">
+        <div class="kpi">
+          <strong>May 29, 2026</strong>
+          <span>Private Preview Target</span>
+        </div>
+        <div class="kpi">
+          <strong>10</strong>
+          <span>In-Preview Scope Workloads</span>
+        </div>
+        <div class="kpi">
+          <strong>5</strong>
+          <span>RB Track (On Schedule)</span>
+        </div>
+        <div class="kpi">
+          <strong>4</strong>
+          <span>Post-RB Track (At Risk)</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>Scope Snapshot</h2>
+        <div class="snapshot-grid">
+          <section class="snapshot-col">
+            <h3>In Private Preview Scope</h3>
+            <ul>
+              <li>Fabric Shell</li>
+              <li>Workloads Hub L1</li>
+              <li>OneLake Category</li>
+              <li>Lakehouse</li>
+              <li>Variable Library</li>
+              <li>Notebook</li>
+              <li>Real-Time Hub</li>
+              <li>Kusto</li>
+              <li>Warehouse and Azure SQL DW</li>
+              <li>Data Science</li>
+            </ul>
+          </section>
+          <section class="snapshot-col">
+            <h3>RB Track (On Schedule)</h3>
+            <ul>
+              <li>OneLake Catalog - Govern</li>
+              <li>Deployment Pipelines</li>
+              <li>Event Stream</li>
+              <li>Azure Data Factory</li>
+              <li>Spark Job Definition</li>
+            </ul>
+          </section>
+          <section class="snapshot-col">
+            <h3>Post-RB Track (At Risk)</h3>
+            <ul>
+              <li>Power BI</li>
+              <li>Data flow</li>
+              <li>Data Activator</li>
+              <li>Functions Hub</li>
+            </ul>
+          </section>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Challenge: Multi-Semester Adoption Tail</h2>
+        <ul>
+          <li>Users navigate between workloads with mixed light and dark interfaces.</li>
+          <li>Inconsistent visuals reduce perceived platform polish.</li>
+          <li>The longer the tail, the higher the quality-perception risk.</li>
+        </ul>
+        <h3>Why the Tail Is Long</h3>
+        <ul>
+          <li>Competing priorities across workload teams and semester plans.</li>
+          <li>No unified deadline to force synchronized adoption.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="card" style="margin-top: 14px;">
+      <h2>RB && Post-RB Semester Plan</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Track</th>
+            <th>Workload</th>
+            <th>PM</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>RB Track</td>
+            <td>OneLake Catalog - Govern</td>
+            <td>Naama Tsafrir</td>
+            <td>On Schedule</td>
+          </tr>
+          <tr>
+            <td>RB Track</td>
+            <td>Deployment Pipelines</td>
+            <td>Nimrod Shalit</td>
+            <td>On Schedule</td>
+          </tr>
+          <tr>
+            <td>RB Track</td>
+            <td>Event Stream</td>
+            <td>Alicia Li</td>
+            <td>On Schedule</td>
+          </tr>
+          <tr>
+            <td>RB Track</td>
+            <td>Azure Data Factory</td>
+            <td>Hao Chen</td>
+            <td>On Schedule</td>
+          </tr>
+          <tr>
+            <td>RB Track</td>
+            <td>Spark Job Definition</td>
+            <td>Qixiao Wang</td>
+            <td>On Schedule</td>
+          </tr>
+          <tr class="risk-row">
+            <td>Post-RB</td>
+            <td>Power BI</td>
+            <td>Kay Unkroth</td>
+            <td><span class="status-pill risk">At Risk</span></td>
+          </tr>
+          <tr class="risk-row">
+            <td>Post-RB</td>
+            <td>Data flow</td>
+            <td>Miguel Escobar</td>
+            <td><span class="status-pill risk">At Risk</span></td>
+          </tr>
+          <tr class="risk-row">
+            <td>Post-RB</td>
+            <td>Data Activator</td>
+            <td>James Hutton</td>
+            <td><span class="status-pill risk">At Risk</span></td>
+          </tr>
+          <tr class="risk-row">
+            <td>Post-RB</td>
+            <td>Functions Hub</td>
+            <td>Sunitha Muthukrishna</td>
+            <td><span class="status-pill risk">At Risk</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="priority">
+      <article class="item">
+        <div class="item-head">
+          <h3>1) Power BI</h3>
+          <span class="risk-badge high">Risk: High</span>
+        </div>
+        <ul class="detail-list">
+          <li><b>Status:</b> Post-RB</li>
+          <li><b>Implementation Scope:</b> Complex multi-component system</li>
+          <li>
+            <b>Technical Challenges:</b>
+            <ul>
+              <li>Advanced editors depend on other components (Web modelling on PQO)</li>
+              <li>Reports define custom theming but may pull defaults from surrounding environment</li>
+              <li>Full component coverage remains unclear (semantic model settings pane status unknown)</li>
+            </ul>
+          </li>
+          <li><b>Scope Clarity Issue:</b> The full scope of work to support Dark Mode is not clear</li>
+          <li><b>Decision:</b> Dark Mode is NOT in scope for RB semester</li>
+          <li><b>Top Priority:</b> Clarifying scopes and timelines first</li>
+          <li><b>Next Steps:</b> Organizing comprehensive testing on PBI pages to assess adoption gaps and inform post-RB acceleration decisions</li>
+          <li><b>Timeline:</b> TBD (pending Waves roadmap clarification)</li>
+        </ul>
+      </article>
+      <article class="item">
+        <div class="item-head">
+          <h3>2) Data flow</h3>
+          <span class="risk-badge high">Risk: High</span>
+        </div>
+        <ul class="detail-list">
+          <li><b>Status:</b> Post-RB</li>
+          <li><b>Implementation Scope:</b> Self-hosted iframe architecture</li>
+          <li><b>Technical Blocker:</b> Self-hosted iframes do not natively support dark mode and cannot use Shell-provided dark mode approach</li>
+          <li><b>Impact:</b> Requires custom implementation; standard extension-based onboarding path not viable</li>
+          <li><b>Effort Level:</b> High complexity; custom solution development required</li>
+          <li><b>Next Steps:</b> Complex technical assessment required; solution approach still under evaluation</li>
+          <li><b>Timeline:</b> TBD (pending technical feasibility assessment)</li>
+        </ul>
+      </article>
+      <article class="item">
+        <div class="item-head">
+          <h3>3) Data Activator</h3>
+          <span class="risk-badge medium">Risk: Medium</span>
+        </div>
+        <ul class="detail-list">
+          <li><b>Status:</b> Post-RB</li>
+          <li><b>Implementation Scope:</b> React-only extension with limited workload</li>
+          <li><b>Effort Level:</b> Manageable</li>
+          <li><b>Blocker:</b> None technical; availability dependent on team capacity</li>
+          <li><b>Next Steps:</b> Ongoing discussions with team to assess feasibility of earlier support</li>
+          <li><b>Timeline:</b> No confirmed date yet; decision pending further alignment with PBI team</li>
+        </ul>
+      </article>
+      <article class="item">
+        <div class="item-head">
+          <h3>4) Functions Hub</h3>
+          <span class="risk-badge medium">Risk: Medium</span>
+        </div>
+        <ul class="detail-list">
+          <li><b>Status:</b> Post-RB</li>
+          <li><b>Implementation Scope:</b> React-only extension with limited workload</li>
+          <li><b>Effort Level:</b> Manageable</li>
+          <li><b>Blocker:</b> None technical; prioritization dependent on team roadmap</li>
+          <li><b>Next Steps:</b> Ongoing discussions with team to assess feasibility of earlier support</li>
+          <li><b>Timeline:</b> No confirmed date yet; decision pending further alignment with PBI team</li>
+        </ul>
+      </article>
+    </section>
+
+    <p class="foot">Prepared from DarkMode-Adoption-Outline content for leadership reporting.</p>
+  </main>
+</body>
+</html>
